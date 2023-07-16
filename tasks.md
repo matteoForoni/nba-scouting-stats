@@ -1,0 +1,16 @@
+- [X] Import dataset
+- [X] Data analysis
+- [X] Data cleaning
+- [ ] Graphs
+    - [ ] For each season, evaluate top players for pts, reb, assist and fg3
+    - [ ] For each squad of a specific season, show the division of points, reb, assist between players
+    - [ ] For each mach of a specific season, plot the statistics
+    - [ ] For each season, show top player by statistics for each position
+    - [ ] US Map to locate each squad --> divide using color by east and western conference
+    - [ ] Player Research
+        - [ ] Filter by name
+        - [ ] Get statistics of last season
+        - [ ] Get trends using all data, highlight top performances
+        - [ ] Show history of teams
+        - [ ] Victory/losses of teams
+        - [ ] Compare with an other player --> show comparison on all elements before
