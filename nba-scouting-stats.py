@@ -5,6 +5,11 @@ import streamlit as st
 from dash import Dash, dcc, html
 
 #### Default variables
+EXTERNAL_STYLESHEET = [{
+    "href": ('./asset/css/style.css'),
+    "rel": "stylesheet",
+    "type": "text/css"
+}]
 
 #### General functions
 
@@ -32,12 +37,12 @@ games_details_df.dropna(subset=['PLUS_MINUS'], inplace=True)
 # Data merge
 
 # Initiliaze the app
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=EXTERNAL_STYLESHEET)
 app.title = 'NBA Scounting Stats'
 
 # Layout of the app
 app.layout = html.Div([
-    html.Div(children='NBA Scounting Stats', id='title')
+    html.Div(children='NBA Scounting Stats', className='title')
 ])
 
 # Run the app
