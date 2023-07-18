@@ -2,10 +2,13 @@
 - [X] Data analysis
 - [X] Data cleaning
 - [ ] Graphs
-    - [ ] For each season, evaluate top players for pts, reb, assist and fg3
-    - [ ] For each squad of a specific season, show the division of points, reb, assist between players
-    - [ ] For each mach of a specific season, plot the statistics
-    - [ ] For each season, show top player by statistics for each position
+    - [X] For specific season, evaluate top players for pts, reb, assist and fg3
+    - [ ] For each season, show the trend of points, reb, assist, fg3 of a specific squad
+    - [ ] For each season, show the division of points, reb, assist, fg3 of a specific squad between players--> pie chart
+    - [ ] For each season, show the trend of wins and losses of a specific squad --> bar chart
+    - [ ] For each player, plot the statistics across all season
+    - [ ] For each player, plot the statistics across all matches of a specific season
+    - [ ] For each player and its team, show the trend of statistics across a time period
     - [ ] US Map to locate each squad --> divide using color by east and western conference
     - [ ] Player Research
         - [ ] Filter by name
