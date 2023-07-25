@@ -7,7 +7,7 @@
     - [X] For each season, show the division of points, reb, assist, fg3 of a specific squad between players--> pie chart
     - [ ] (Broken dataset) For each season, show the trend of wins and losses of a specific squad --> bar chart
     - [X] For each player, plot the statistics across all season
-    - [ ] For each player, plot the statistics across all matches of a specific season
+    - [X] For each player, plot the statistics across all matches of a specific season
     - [ ] (Optional) For each player and its team, show the trend of statistics across a time period
     - [ ] (Optional) US Map to locate each squad --> divide using color by east and western conference
     - [ ] Player Research
