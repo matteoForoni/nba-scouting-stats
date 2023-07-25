@@ -3,8 +3,8 @@
 - [X] Data cleaning
 - [ ] Graphs
     - [X] For specific season, evaluate top players for pts, reb, assist and fg3
-    - [ ] For each season, show the trend of points, reb, assist, fg3 of a specific squad
-    - [ ] For each season, show the division of points, reb, assist, fg3 of a specific squad between players--> pie chart
+    - [X] For each season, show the trend of points, reb, assist, fg3 of a specific squad
+    - [X] For each season, show the division of points, reb, assist, fg3 of a specific squad between players--> pie chart
     - [ ] For each season, show the trend of wins and losses of a specific squad --> bar chart
     - [ ] For each player, plot the statistics across all season
     - [ ] For each player, plot the statistics across all matches of a specific season
