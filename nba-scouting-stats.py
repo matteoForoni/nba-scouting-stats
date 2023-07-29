@@ -118,7 +118,29 @@ app.layout = html.Div([
     html.Div([ dcc.Graph(id='fg3m-team-player-pie')],  
                 className='secondary3DivSplit'),
     html.Div([ dcc.Graph(id='fg3a-team-player-pie')],  
-                className='secondary3DivSplit'),   
+                className='secondary3DivSplit'), 
+    ### Graphs 4
+    html.H2(children='Player statistic across all seasons', className="paragraphTitle"),
+    html.P(children='Player Dropdown', className='tableLabel'),
+    dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'Tyson Chandler', id='player-dropdown'),
+    html.P(children='Summed Statistic', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-player-sum')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-player-sum')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-player-sum')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='fg3-player-sum')],  
+                className='secondary2DivSplit'),
+    html.P(children='Averaged Statistic', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-player-avg')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-player-avg')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-player-avg')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='fg3-player-avg')],  
+                className='secondary2DivSplit'),
     
 ])
 
@@ -209,7 +231,7 @@ def update_graphs(team):
 
     return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10
 
-### Callback for Team statistic divided by players for a specific season
+### Callback for Player statistic across all seasons
 @app.callback(
     Output('pts-team-player-pie', 'figure'),
     Output('reb-team-player-pie', 'figure'),
@@ -230,6 +252,35 @@ def update_pies(team, season):
     fig5 = px.pie(plot_sum_data, values=plot_sum_data['FG3A'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
 
     return fig1, fig2, fig3, fig4, fig5
+
+### Callback for Team statistic for a specific season
+@app.callback(
+    Output('pts-player-sum', 'figure'),
+    Output('reb-player-sum', 'figure'),
+    Output('ast-player-sum', 'figure'),
+    Output('fg3-player-sum', 'figure'),
+    Output('pts-player-avg', 'figure'),
+    Output('reb-player-avg', 'figure'),
+    Output('ast-player-avg', 'figure'),
+    Output('fg3-player-avg', 'figure'),
+    Input('player-dropdown', 'value')
+)
+def update_graphs(player):
+    performances_by_season_sum = games_full_df.groupby(['SEASON', 'TEAM', 'PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].sum().reset_index()
+    performances_by_season_avg = games_full_df.groupby(['SEASON', 'TEAM', 'PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].mean().reset_index()
+    plot_sum_data = performances_by_season_sum[performances_by_season_sum['PLAYER_NAME'] == player]
+    plot_avg_data = performances_by_season_avg[performances_by_season_avg['PLAYER_NAME'] == player]
+
+    fig1 = px.line(plot_sum_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total PTS per Season per player {player}')
+    fig2 = px.line(plot_sum_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total REB per Season per player {player}')
+    fig3 = px.line(plot_sum_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total AST per Season per player {player}')
+    fig4 = px.line(plot_sum_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total Three Points Shots Stats per Season per player {player}')
+    fig5 = px.line(plot_avg_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average PTS per Season per player {player}')
+    fig6 = px.line(plot_avg_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average REB per Season per player {player}')
+    fig7 = px.line(plot_avg_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average AST per Season per player {player}')
+    fig8 = px.line(plot_avg_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average Three Points Shots Stats per Season per player {player}')
+
+    return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8
 
 # Run the app
 if __name__ == '__main__':
