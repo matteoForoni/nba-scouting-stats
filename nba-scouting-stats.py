@@ -62,6 +62,7 @@ app.title = 'NBA Scounting Stats'
 # html.Div(children='NBA Scounting Stats', className='title')
 app.layout = html.Div([
     html.H1(children='NBA Scouting Stats', style={'textAlign':'left'}),
+    ### Graphs 1
     html.H2(children='Top Players for a specific season', className="paragraphTitle"),
     dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown'),
     html.Div([ html.P(children='Summed Statistics', className='tableLabel'),
@@ -74,6 +75,7 @@ app.layout = html.Div([
                                                                 style_header={'backgroundColor':'lightgrey','fontWeight':'bold'},
                                                                 style_cell={'textAlign':'center','width':'12%'})
     ],  className='secondary2DivSplit'),
+    ### Graphs 2
     html.H2(children='Team statistic for a specific season', className="paragraphTitle"),
     html.P(children='Team Dropdown', className='tableLabel'),
     dcc.Dropdown(np.sort(games_full_df['TEAM'].unique()), 'All', id='team-dropdown'),
@@ -99,6 +101,25 @@ app.layout = html.Div([
                 className='secondary3DivSplit'),
     html.Div([ dcc.Graph(id='fg3a-team-season-avg')],  
                 className='secondary3DivSplit'),
+    ### Graphs 3
+    html.H2(children='Team statistic divided by players for a specific season', className="paragraphTitle"),
+    html.Div([ html.P(children='Season Dropdown', className='tableLabel'),
+                dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown-pie')],  
+                className='primary2DivSplit'),
+    html.Div([ html.P(children='Team Dropdown', className='tableLabel'),
+                dcc.Dropdown(np.sort(games_full_df['TEAM'].unique()), 'Bulls', id='team-dropdown-pie')],  
+            className='secondary2DivSplit'), 
+    html.Div([ dcc.Graph(id='pts-team-player-pie')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-team-player-pie')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-team-player-pie')],  
+                className='primary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3m-team-player-pie')],  
+                className='secondary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3a-team-player-pie')],  
+                className='secondary3DivSplit'),   
+    
 ])
 
 ### Callback for stats-sum-table
@@ -188,6 +209,27 @@ def update_graphs(team):
 
     return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10
 
+### Callback for Team statistic divided by players for a specific season
+@app.callback(
+    Output('pts-team-player-pie', 'figure'),
+    Output('reb-team-player-pie', 'figure'),
+    Output('ast-team-player-pie', 'figure'),
+    Output('fg3m-team-player-pie', 'figure'),
+    Output('fg3a-team-player-pie', 'figure'),
+    Input('team-dropdown-pie', 'value'),
+    Input('season-dropdown-pie', 'value')
+)
+def update_pies(team, season):
+    performances_by_season_sum = games_full_df.groupby(['SEASON', 'TEAM', 'PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A' ]].sum().reset_index()
+    plot_sum_data = performances_by_season_sum[(performances_by_season_sum['TEAM'] == team) & (performances_by_season_sum['SEASON'] == int(season))]
+    #print(plot_sum_data)
+    fig1 = px.pie(plot_sum_data, values=plot_sum_data['PTS'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+    fig2 = px.pie(plot_sum_data, values=plot_sum_data['REB'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+    fig3 = px.pie(plot_sum_data, values=plot_sum_data['AST'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+    fig4 = px.pie(plot_sum_data, values=plot_sum_data['FG3M'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+    fig5 = px.pie(plot_sum_data, values=plot_sum_data['FG3A'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+
+    return fig1, fig2, fig3, fig4, fig5
 
 # Run the app
 if __name__ == '__main__':
