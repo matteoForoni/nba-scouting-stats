@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from dash import Dash, dcc, html, Input, Output, callback, dash_table
+import plotly.express as px
 
 #### Default variables
 EXTERNAL_STYLESHEET = [{
@@ -67,13 +68,37 @@ app.layout = html.Div([
                 dash_table.DataTable([], GENERAL_STATS_COLUMNS, id='stats-sum-table',style_table={'border': 'thin lightgrey solid'},
                                                                 style_header={'backgroundColor':'lightgrey','fontWeight':'bold'},
                                                                 style_cell={'textAlign':'center','width':'12%'})
-    ],  style={'display': 'inline-block', 'width': '45%', 'margin-left': '5px', 'margin-right': '20px'}),
+    ],  className='primary2DivSplit'),
     html.Div([ html.P(children='Averaged Statistics', className='tableLabel'),
                 dash_table.DataTable([], GENERAL_STATS_COLUMNS, id='stats-avg-table',style_table={'border': 'thin lightgrey solid'},
                                                                 style_header={'backgroundColor':'lightgrey','fontWeight':'bold'},
                                                                 style_cell={'textAlign':'center','width':'12%'})
-    ],  style={'display': 'inline-block', 'width': '45%', 'margin-left': '20px'}),
-
+    ],  className='secondary2DivSplit'),
+    html.H2(children='Team statistic for a specific season', className="paragraphTitle"),
+    html.P(children='Team Dropdown', className='tableLabel'),
+    dcc.Dropdown(np.sort(games_full_df['TEAM'].unique()), 'All', id='team-dropdown'),
+    html.P(children='Summed Statistic', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-team-season-sum')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-team-season-sum')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-team-season-sum')],  
+                className='primary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3m-team-season-sum')],  
+                className='secondary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3a-team-season-sum')],  
+                className='secondary3DivSplit'),
+    html.P(children='Averaged Statistic', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-team-season-avg')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-team-season-avg')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-team-season-avg')],  
+                className='primary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3m-team-season-avg')],  
+                className='secondary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3a-team-season-avg')],  
+                className='secondary3DivSplit'),
 ])
 
 ### Callback for stats-sum-table
@@ -108,7 +133,7 @@ def update_table(season):
 )
 def update_table(season):
     stats_col = ['PTS','REB', 'AST', 'FG3M', 'FG3A']
-    performances_by_season_sum = games_full_df.groupby(['SEASON', 'TEAM','PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].mean().reset_index()
+    performances_by_season_sum = games_full_df.groupby(['SEASON', 'TEAM','PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].mean().reset_index().round(decimals=2)
     #print(type(season))
     season_data_df = performances_by_season_sum[performances_by_season_sum['SEASON'] == int(season)]
     #print(season_data_df)
@@ -125,6 +150,44 @@ def update_table(season):
         })
     #print(table_data)
     return table_data
+
+### Callback for Team statistic for a specific season
+@app.callback(
+    Output('pts-team-season-sum', 'figure'),
+    Output('pts-team-season-avg', 'figure'),
+    Output('reb-team-season-sum', 'figure'),
+    Output('reb-team-season-avg', 'figure'),
+    Output('ast-team-season-sum', 'figure'),
+    Output('ast-team-season-avg', 'figure'),
+    Output('fg3m-team-season-sum', 'figure'),
+    Output('fg3m-team-season-avg', 'figure'),
+    Output('fg3a-team-season-sum', 'figure'),
+    Output('fg3a-team-season-avg', 'figure'),
+    Input('team-dropdown', 'value')
+)
+def update_graphs(team):
+    performances_by_season_sum = games_full_df.groupby(['SEASON', 'TEAM'])[['PTS','REB', 'AST', 'FG3M', 'FG3A' ]].sum().reset_index()
+    performances_by_season_avg = games_full_df.groupby(['SEASON', 'TEAM', 'GAME_ID'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].sum().groupby(['SEASON', 'TEAM']).mean().reset_index()
+    if team != 'All':
+        plot_sum_data = performances_by_season_sum[performances_by_season_sum['TEAM'] == team]
+        plot_avg_data = performances_by_season_avg[performances_by_season_avg['TEAM'] == team]
+    else: 
+        plot_sum_data = performances_by_season_sum
+        plot_avg_data = performances_by_season_avg
+    
+    fig1 = px.line(plot_sum_data, x='SEASON', y='PTS', markers=True, color="TEAM", color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total PTS per Season')
+    fig2 = px.line(plot_avg_data, x='SEASON', y='PTS', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average PTS per Season')
+    fig3 = px.line(plot_sum_data, x='SEASON', y='REB', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total REB per Season')
+    fig4 = px.line(plot_avg_data, x='SEASON', y='REB', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average REB per Season')
+    fig5 = px.line(plot_sum_data, x='SEASON', y='AST', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total AST per Season')
+    fig6 = px.line(plot_avg_data, x='SEASON', y='AST', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average AST per Season')
+    fig7 = px.line(plot_sum_data, x='SEASON', y='FG3M', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total FG3M per Season')
+    fig8 = px.line(plot_avg_data, x='SEASON', y='FG3M', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average FG3M per Season')
+    fig9 = px.line(plot_sum_data, x='SEASON', y='FG3A', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total FG3A per Season')
+    fig10 = px.line(plot_avg_data, x='SEASON', y='FG3A', markers=True, color='TEAM', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average FG3A per Season')
+
+    return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10
+
 
 # Run the app
 if __name__ == '__main__':
