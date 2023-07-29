@@ -120,7 +120,7 @@ app.layout = html.Div([
     html.Div([ dcc.Graph(id='fg3a-team-player-pie')],  
                 className='secondary3DivSplit'), 
     ### Graphs 4
-    html.H2(children='Player statistic across all seasons', className="paragraphTitle"),
+    html.H2(children='Player statistics across all seasons', className="paragraphTitle"),
     html.P(children='Player Dropdown', className='tableLabel'),
     dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'Tyson Chandler', id='player-dropdown'),
     html.P(children='Summed Statistic', className='tableLabel'),
@@ -141,7 +141,19 @@ app.layout = html.Div([
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='fg3-player-avg')],  
                 className='secondary2DivSplit'),
-    
+    ### Graphs 5
+    html.H2(children='Player statistics across all matches of a specific season', className="paragraphTitle"),
+    html.P(children='Player Dropdown', className='tableLabel'),
+    html.Div([ html.P(children='Season Dropdown', className='tableLabel'),
+                dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown-match')],  
+                className='primary2DivSplit'),
+    html.Div([ html.P(children='Player Dropdown', className='tableLabel'),
+                    dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'Tyson Chandler', id='player-dropdown-match')],  
+            className='secondary2DivSplit'), 
+    html.Div([ dcc.Graph(id='shot-player')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='fg3-player')],  
+                className='secondary2DivSplit'),
 ])
 
 ### Callback for stats-sum-table
@@ -281,6 +293,23 @@ def update_graphs(player):
     fig8 = px.line(plot_avg_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average Three Points Shots Stats per Season per player {player}')
 
     return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8
+
+### Callback for Team statistic for a specific season
+@app.callback(
+    Output('shot-player', 'figure'),
+    Output('fg3-player', 'figure'),
+    Input('player-dropdown-match', 'value'),
+    Input('season-dropdown-match', 'value')
+)
+def update_players(player, season):
+    plot_data = games_full_df[(games_full_df['PLAYER_NAME'] == player) & (games_full_df['SEASON'] == int(season))]
+    plot_data['GAME_NUMBER'] = range(len(plot_data))
+
+    fig1 = px.line(plot_data, x='GAME_NUMBER', y=['PTS', 'REB', 'AST'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'PTS, REB and AST per match per season {season} per player {player}')
+    fig2 = px.line(plot_data, x='GAME_NUMBER', y=['FG3A', 'FG3M'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'FG3M, FG3A per match per season {season} per player {player}')
+
+    return fig1, fig2
+
 
 # Run the app
 if __name__ == '__main__':
