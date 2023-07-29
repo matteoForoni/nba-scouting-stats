@@ -4,3 +4,15 @@
     background-color: dodgerblue;
     font-weight: bold;
 }
+
+.paragraphTitle {
+    text-align: left;
+    color:darkviolet;
+}
+
+.tableLabel {
+    text-align:center;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
