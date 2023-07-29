@@ -16,3 +16,29 @@
     margin-bottom: 10px;
     font-weight: bold;
 }
+
+.primary2DivSplit {
+    display: inline-block;
+    width: 45%;
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+.secondary2DivSplit {
+    display: inline-block;
+    width: 45%;
+    margin-left: 20px;
+}
+
+.primary3DivSplit {
+    display: inline-block;
+    width: 30%;
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+.secondary3DivSplit {
+    display: inline-block;
+    width: 30%;
+    margin-left: 20px;
+}
