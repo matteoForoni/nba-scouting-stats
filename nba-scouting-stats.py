@@ -153,6 +153,36 @@ app.layout = html.Div([
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='fg3-player')],  
                 className='secondary2DivSplit'),
+    ### Graph 6
+    html.H2(children='Players Comparison across all seasons', className="paragraphTitle"),
+    html.Div([ html.P(children='Player 1 Dropdown', className='tableLabel'),
+                dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'Kobe Bryant', id='player1-dropdown')],  
+                className='primary2DivSplit'),
+    html.Div([ html.P(children='Player 2 Dropdown', className='tableLabel'),
+                    dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'LeBron James', id='player2-dropdown')],
+                className='secondary2DivSplit'), 
+    html.P(children='Total Statistics', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-player-sum-comparison')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-player-sum-comparison')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-player-sum-comparison')],  
+                className='primary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3m-player-sum-comparison')],  
+                className='secondary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3a-player-sum-comparison')],  
+                className='secondary3DivSplit'),
+    html.P(children='Average Statistics', className='tableLabel'),
+    html.Div([ dcc.Graph(id='pts-player-avg-comparison')],  
+                className='primary2DivSplit'),
+    html.Div([ dcc.Graph(id='reb-player-avg-comparison')],  
+                className='secondary2DivSplit'),
+    html.Div([ dcc.Graph(id='ast-player-avg-comparison')],  
+                className='primary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3m-player-avg-comparison')],  
+                className='secondary3DivSplit'),
+    html.Div([ dcc.Graph(id='fg3a-player-avg-comparison')],  
+                className='secondary3DivSplit')
 ])
 
 ### Callback for stats-sum-table
@@ -309,6 +339,60 @@ def update_players(player, season):
 
     return fig1, fig2
 
+### Callback for Player Comparison
+@app.callback(
+    Output('pts-player-sum-comparison', 'figure'),
+    Output('pts-player-avg-comparison', 'figure'),
+    Output('reb-player-sum-comparison', 'figure'),
+    Output('reb-player-avg-comparison', 'figure'),
+    Output('ast-player-sum-comparison', 'figure'),
+    Output('ast-player-avg-comparison', 'figure'),
+    Output('fg3m-player-sum-comparison', 'figure'),
+    Output('fg3m-player-avg-comparison', 'figure'),
+    Output('fg3a-player-sum-comparison', 'figure'),
+    Output('fg3a-player-avg-comparison', 'figure'),
+    Input('player1-dropdown', 'value'),
+    Input('player2-dropdown', 'value'),
+)
+def update_player_comparison(player1, player2):
+    if player1 and player2 and player1 != player2:
+        performances_by_season_sum = games_full_df.groupby(['SEASON', 'PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].sum().reset_index()
+        performances_by_season_avg = games_full_df.groupby(['SEASON', 'PLAYER_NAME'])[['PTS','REB', 'AST', 'FG3M', 'FG3A']].mean().reset_index().round(decimals=2)
+        plot_sum_data = performances_by_season_sum[(performances_by_season_sum['PLAYER_NAME'] == player1) | (performances_by_season_sum['PLAYER_NAME'] == player2) ]
+        plot_avg_data = performances_by_season_avg[(performances_by_season_avg['PLAYER_NAME'] == player1) | (performances_by_season_avg['PLAYER_NAME'] == player2)]
+        fig1 = px.line(plot_sum_data, x='SEASON', y='PTS', markers=True, color="PLAYER_NAME", color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total PTS per Season')
+        fig2 = px.line(plot_avg_data, x='SEASON', y='PTS', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average PTS per Season')
+        fig3 = px.line(plot_sum_data, x='SEASON', y='REB', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total REB per Season')
+        fig4 = px.line(plot_avg_data, x='SEASON', y='REB', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average REB per Season')
+        fig5 = px.line(plot_sum_data, x='SEASON', y='AST', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total AST per Season')
+        fig6 = px.line(plot_avg_data, x='SEASON', y='AST', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average AST per Season')
+        fig7 = px.line(plot_sum_data, x='SEASON', y='FG3M', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total FG3M per Season')
+        fig8 = px.line(plot_avg_data, x='SEASON', y='FG3M', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average FG3M per Season')
+        fig9 = px.line(plot_sum_data, x='SEASON', y='FG3A', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Total FG3A per Season')
+        fig10 = px.line(plot_avg_data, x='SEASON', y='FG3A', markers=True, color='PLAYER_NAME', color_discrete_sequence=px.colors.qualitative.Dark24, title = 'Average FG3A per Season')
+
+        return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10
+    else:
+        empty_message = {"layout": {
+            "xaxis": {
+                "visible": False
+            },
+            "yaxis": {
+                "visible": False
+            },
+            "annotations": [
+                {
+                    "text": "No search made",
+                    "xref": "paper",
+                    "yref": "paper",
+                    "showarrow": False,
+                    "font": {
+                        "size": 28
+                    }
+                }
+            ]
+        }}
+        return empty_message, empty_message, empty_message, empty_message, empty_message, empty_message, empty_message, empty_message, empty_message, empty_message
 
 # Run the app
 if __name__ == '__main__':
