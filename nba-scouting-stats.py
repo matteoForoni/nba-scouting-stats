@@ -65,21 +65,21 @@ app.layout = html.Div([
     ### Graphs 1
     html.H2(children='Top Players for a specific season', className="paragraphTitle"),
     dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown'),
-    html.Div([ html.P(children='Summed Statistics', className='tableLabel'),
+    html.Div([ html.P(children='Total Statistics', className='tableLabel'),
                 dash_table.DataTable([], GENERAL_STATS_COLUMNS, id='stats-sum-table',style_table={'border': 'thin lightgrey solid'},
                                                                 style_header={'backgroundColor':'lightgrey','fontWeight':'bold'},
                                                                 style_cell={'textAlign':'center','width':'12%'})
     ],  className='primary2DivSplit'),
-    html.Div([ html.P(children='Averaged Statistics', className='tableLabel'),
+    html.Div([ html.P(children='Average Statistics', className='tableLabel'),
                 dash_table.DataTable([], GENERAL_STATS_COLUMNS, id='stats-avg-table',style_table={'border': 'thin lightgrey solid'},
                                                                 style_header={'backgroundColor':'lightgrey','fontWeight':'bold'},
                                                                 style_cell={'textAlign':'center','width':'12%'})
     ],  className='secondary2DivSplit'),
     ### Graphs 2
-    html.H2(children='Team statistic for a specific season', className="paragraphTitle"),
+    html.H2(children='Team statistics for a specific season', className="paragraphTitle"),
     html.P(children='Team Dropdown', className='tableLabel'),
     dcc.Dropdown(np.sort(games_full_df['TEAM'].unique()), 'All', id='team-dropdown'),
-    html.P(children='Summed Statistic', className='tableLabel'),
+    html.P(children='Total Statistics', className='tableLabel'),
     html.Div([ dcc.Graph(id='pts-team-season-sum')],  
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='reb-team-season-sum')],  
@@ -90,7 +90,7 @@ app.layout = html.Div([
                 className='secondary3DivSplit'),
     html.Div([ dcc.Graph(id='fg3a-team-season-sum')],  
                 className='secondary3DivSplit'),
-    html.P(children='Averaged Statistic', className='tableLabel'),
+    html.P(children='Average Statistics', className='tableLabel'),
     html.Div([ dcc.Graph(id='pts-team-season-avg')],  
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='reb-team-season-avg')],  
@@ -102,7 +102,7 @@ app.layout = html.Div([
     html.Div([ dcc.Graph(id='fg3a-team-season-avg')],  
                 className='secondary3DivSplit'),
     ### Graphs 3
-    html.H2(children='Team statistic divided by players for a specific season', className="paragraphTitle"),
+    html.H2(children='Team statistics divided by players for a specific season', className="paragraphTitle"),
     html.Div([ html.P(children='Season Dropdown', className='tableLabel'),
                 dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown-pie')],  
                 className='primary2DivSplit'),
@@ -123,7 +123,7 @@ app.layout = html.Div([
     html.H2(children='Player statistics across all seasons', className="paragraphTitle"),
     html.P(children='Player Dropdown', className='tableLabel'),
     dcc.Dropdown(np.sort(games_full_df['PLAYER_NAME'].unique()), 'Tyson Chandler', id='player-dropdown'),
-    html.P(children='Summed Statistic', className='tableLabel'),
+    html.P(children='Total Statistics', className='tableLabel'),
     html.Div([ dcc.Graph(id='pts-player-sum')],  
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='reb-player-sum')],  
@@ -132,7 +132,7 @@ app.layout = html.Div([
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='fg3-player-sum')],  
                 className='secondary2DivSplit'),
-    html.P(children='Averaged Statistic', className='tableLabel'),
+    html.P(children='Average Statistics', className='tableLabel'),
     html.Div([ dcc.Graph(id='pts-player-avg')],  
                 className='primary2DivSplit'),
     html.Div([ dcc.Graph(id='reb-player-avg')],  
@@ -143,7 +143,6 @@ app.layout = html.Div([
                 className='secondary2DivSplit'),
     ### Graphs 5
     html.H2(children='Player statistics across all matches of a specific season', className="paragraphTitle"),
-    html.P(children='Player Dropdown', className='tableLabel'),
     html.Div([ html.P(children='Season Dropdown', className='tableLabel'),
                 dcc.Dropdown(np.sort(games_full_df['SEASON'].unique()), '2003', id='season-dropdown-match')],  
                 className='primary2DivSplit'),
@@ -258,10 +257,10 @@ def update_pies(team, season):
     plot_sum_data = performances_by_season_sum[(performances_by_season_sum['TEAM'] == team) & (performances_by_season_sum['SEASON'] == int(season))]
     #print(plot_sum_data)
     fig1 = px.pie(plot_sum_data, values=plot_sum_data['PTS'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
-    fig2 = px.pie(plot_sum_data, values=plot_sum_data['REB'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
-    fig3 = px.pie(plot_sum_data, values=plot_sum_data['AST'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
-    fig4 = px.pie(plot_sum_data, values=plot_sum_data['FG3M'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
-    fig5 = px.pie(plot_sum_data, values=plot_sum_data['FG3A'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'PTS division for {team} team in season {season}', hole=.3)
+    fig2 = px.pie(plot_sum_data, values=plot_sum_data['REB'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'REB division for {team} team in season {season}', hole=.3)
+    fig3 = px.pie(plot_sum_data, values=plot_sum_data['AST'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'AST division for {team} team in season {season}', hole=.3)
+    fig4 = px.pie(plot_sum_data, values=plot_sum_data['FG3M'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'FG3M division for {team} team in season {season}', hole=.3)
+    fig5 = px.pie(plot_sum_data, values=plot_sum_data['FG3A'], names=plot_sum_data['PLAYER_NAME'], color_discrete_sequence=px.colors.qualitative.Light24, title =f'FG3A division for {team} team in season {season}', hole=.3)
 
     return fig1, fig2, fig3, fig4, fig5
 
@@ -283,14 +282,14 @@ def update_graphs(player):
     plot_sum_data = performances_by_season_sum[performances_by_season_sum['PLAYER_NAME'] == player]
     plot_avg_data = performances_by_season_avg[performances_by_season_avg['PLAYER_NAME'] == player]
 
-    fig1 = px.line(plot_sum_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total PTS per Season per player {player}')
-    fig2 = px.line(plot_sum_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total REB per Season per player {player}')
-    fig3 = px.line(plot_sum_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total AST per Season per player {player}')
-    fig4 = px.line(plot_sum_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total Three Points Shots Stats per Season per player {player}')
-    fig5 = px.line(plot_avg_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average PTS per Season per player {player}')
-    fig6 = px.line(plot_avg_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average REB per Season per player {player}')
-    fig7 = px.line(plot_avg_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average AST per Season per player {player}')
-    fig8 = px.line(plot_avg_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average Three Points Shots Stats per Season per player {player}')
+    fig1 = px.line(plot_sum_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total PTS per Season for player {player}')
+    fig2 = px.line(plot_sum_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total REB per Season for player {player}')
+    fig3 = px.line(plot_sum_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total AST per Season for player {player}')
+    fig4 = px.line(plot_sum_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Total Three Points Stats per Season per player {player}')
+    fig5 = px.line(plot_avg_data, x='SEASON', y='PTS', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average PTS per Season for player {player}')
+    fig6 = px.line(plot_avg_data, x='SEASON', y='REB', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average REB per Season for player {player}')
+    fig7 = px.line(plot_avg_data, x='SEASON', y='AST', markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average AST per Season for player {player}')
+    fig8 = px.line(plot_avg_data, x='SEASON', y=['FG3M', 'FG3A'], markers=True, color_discrete_sequence=px.colors.qualitative.T10, title = f'Average Three Points Stats per Season per player {player}')
 
     return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8
 
@@ -305,8 +304,8 @@ def update_players(player, season):
     plot_data = games_full_df[(games_full_df['PLAYER_NAME'] == player) & (games_full_df['SEASON'] == int(season))]
     plot_data['GAME_NUMBER'] = range(len(plot_data))
 
-    fig1 = px.line(plot_data, x='GAME_NUMBER', y=['PTS', 'REB', 'AST'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'PTS, REB and AST per match per season {season} per player {player}')
-    fig2 = px.line(plot_data, x='GAME_NUMBER', y=['FG3A', 'FG3M'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'FG3M, FG3A per match per season {season} per player {player}')
+    fig1 = px.line(plot_data, x='GAME_NUMBER', y=['PTS', 'REB', 'AST'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'PTS, REB and AST per match per season {season} for player {player}')
+    fig2 = px.line(plot_data, x='GAME_NUMBER', y=['FG3A', 'FG3M'], markers=True, color_discrete_sequence=px.colors.qualitative.Dark24, title = f'FG3M, FG3A per match per season {season} for player {player}')
 
     return fig1, fig2
 

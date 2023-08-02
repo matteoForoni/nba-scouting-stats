@@ -12,9 +12,10 @@
 
 .tableLabel {
     text-align:center;
-    margin-top: 5px;
+    margin-top: 20px;
     margin-bottom: 10px;
     font-weight: bold;
+    font-size: 14pt;
 }
 
 .primary2DivSplit {
